@@ -14,6 +14,8 @@ public class CLIParser {
 
     public Scanner data;
     public String ltCmdrData;
+    public Boolean worked;
+    public String blank = (" ");
     // Var creation
 
     @Command // Help
@@ -23,7 +25,7 @@ public class CLIParser {
                 "      xor <filepath> <cipher> -- XOR text in file with cipher\n" +
                 "      analyze <filepath> <num buckets> -- give character frequencies for text in file for each bucket\n";
     }
-    // This uses the external library Cliche in order to create the "help" for CLI. It prints to the screen.
+    // This uses the external library Cliche in order to create the "help" for CLI. It prints some help to the screen.
 
     @Command // Readtest
     public String readtest(String filename) {
@@ -42,7 +44,9 @@ public class CLIParser {
     @Command // analyze
     public String analyze(String filename, int bucketNum) {
         tricorder(filename);
-        String ltCmdrData = data.nextLine ();
+
+
+
         return("Accepted.");
     }
     // CLI option through Cliche. Creates "analyze", takes filename and num bucket from arguments, puts the filename through tricorder, and otherwise accepts. Nothing for bucketNum yet.
@@ -61,6 +65,7 @@ public class CLIParser {
             System.out.println("Sorry but I was unable to open your file. Verify your file path and try again.");
         }
         ltCmdrData = data.nextLine ();
+        boolean worked = true;
         return ltCmdrData;
     }
     /*
