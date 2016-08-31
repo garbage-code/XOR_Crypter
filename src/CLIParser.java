@@ -8,7 +8,7 @@ public class CLIParser {
     public Scanner data;
     public String filename;
     public String cipher;
-    public String lt_cmdr_data;
+    public String ltCmdrData;
 
 
 
@@ -23,7 +23,7 @@ public class CLIParser {
     @Command // Readtest
     public String readtest(String filename) {
         tricorder(filename);
-        return lt_cmdr_data;
+        return ltCmdrData;
     }
 
     @Command // XOR
@@ -33,9 +33,9 @@ public class CLIParser {
     }
 
     @Command // analyze
-    public String analyze(String filename, int bucketnum) {
+    public String analyze(String filename, int bucketNum) {
         tricorder(filename);
-        String lt_cmdr_data = data.nextLine ();
+        String ltCmdrData = data.nextLine ();
         return("Accepted.");
     }
 
@@ -51,7 +51,7 @@ public class CLIParser {
         } catch (IOException e) {
             System.out.println("Sorry but I was unable to open your file. Verify your file path and try again.");
         }
-        lt_cmdr_data = data.nextLine ();
-        return lt_cmdr_data;
+        ltCmdrData = data.nextLine ();
+        return ltCmdrData;
     }
 }
