@@ -2,6 +2,13 @@ import com.budhash.cliche.*;
 import java.io.IOException;
 import java.util.Scanner;
 import java.io.File;
+/*
+The jarfile you need to run this code is on the Maven Repository here:
+
+http://repo1.maven.org/maven2/com/budhash/cliche/cliche-shell/0.9.3/
+
+under cliche-shell-0.9.3.jar
+ */
 
 public class CLIParser {
 

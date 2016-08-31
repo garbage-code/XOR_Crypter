@@ -1,3 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<eclipse-userlibraries />
+<eclipse-userlibraries>
+  <library name="com.budhash.cliche:cliche-shell:0.9.3">
+    <archive path="C:/Users/start/IdeaProjects/XOR_Crypter/lib/cliche-shell-0.9.3.jar" />
+  </library>
+</eclipse-userlibraries>
 
