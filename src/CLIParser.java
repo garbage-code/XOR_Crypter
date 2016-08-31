@@ -5,9 +5,12 @@ import java.io.File;
 
 public class CLIParser {
 
-    Scanner data = null;
+    public Scanner data;
     public String filename;
     public String cipher;
+    public String lt_cmdr_data;
+
+
 
     @Command // Help
     public String help() {
@@ -19,43 +22,36 @@ public class CLIParser {
 
     @Command // Readtest
     public String readtest(String filename) {
-        try {
-            data = new Scanner(new File(filename));
-        } catch (IOException e) {
-            System.out.println("Sorry but I was unable to open your file. Verify your file path and try again.");
-            e.printStackTrace();
-        }
-        String lt_cmdr_data = data.nextLine ();
+        tricorder(filename);
         return lt_cmdr_data;
     }
 
     @Command // XOR
     public String xor(String filename, String cipher) {
-        try {
-            data = new Scanner(new File(filename));
-        } catch (IOException e) {
-            System.out.println("Sorry but I was unable to open your file. Verify your file path and try again.");
-            e.printStackTrace();
-        }
-        String lt_cmdr_data = data.nextLine ();
-        return("Man, you could've thrown any old junk into here and it would've worked. It worked.");
+        tricorder(filename);
+        return("Accepted.");
     }
 
     @Command // analyze
     public String analyze(String filename, int bucketnum) {
-        try {
-            data = new Scanner(new File(filename));
-        } catch (IOException e) {
-            System.out.println("Sorry but I was unable to open your file. Verify your file path and try again.");
-            e.printStackTrace();
-        }
+        tricorder(filename);
         String lt_cmdr_data = data.nextLine ();
-        return("Bologna accepted.");
+        return("Accepted.");
     }
 
     public static void main(String[] args) throws IOException {
         ShellFactory.createConsoleShell("", "", new CLIParser())
                 .commandLoop();
 
+    }
+
+    public String tricorder(String filename) {
+        try {
+            data = new Scanner(new File(filename));
+        } catch (IOException e) {
+            System.out.println("Sorry but I was unable to open your file. Verify your file path and try again.");
+        }
+        lt_cmdr_data = data.nextLine ();
+        return lt_cmdr_data;
     }
 }
