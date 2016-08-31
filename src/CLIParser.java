@@ -6,11 +6,8 @@ import java.io.File;
 public class CLIParser {
 
     public Scanner data;
-    public String filename;
-    public String cipher;
     public String ltCmdrData;
-
-
+    // Var creation
 
     @Command // Help
     public String help() {
@@ -19,18 +16,21 @@ public class CLIParser {
                 "      xor <filepath> <cipher> -- XOR text in file with cipher\n" +
                 "      analyze <filepath> <num buckets> -- give character frequencies for text in file for each bucket\n";
     }
+    // This uses the external library Cliche in order to create the "help" for CLI. It prints to the screen.
 
     @Command // Readtest
     public String readtest(String filename) {
         tricorder(filename);
         return ltCmdrData;
     }
+    // CLI option through Cliche. Creates "readtest", takes filename from argument, puts it through tricorder function. Returns results.
 
     @Command // XOR
     public String xor(String filename, String cipher) {
         tricorder(filename);
         return("Accepted.");
     }
+    // CLI option through Cliche. Creates "xor", takes filename and cipher from arguments, puts the filename through tricorder, and otherwise accepts. Nothing for cipher yet.
 
     @Command // analyze
     public String analyze(String filename, int bucketNum) {
@@ -38,12 +38,14 @@ public class CLIParser {
         String ltCmdrData = data.nextLine ();
         return("Accepted.");
     }
+    // CLI option through Cliche. Creates "analyze", takes filename and num bucket from arguments, puts the filename through tricorder, and otherwise accepts. Nothing for bucketNum yet.
 
     public static void main(String[] args) throws IOException {
         ShellFactory.createConsoleShell("", "", new CLIParser())
                 .commandLoop();
 
     }
+    // Manages CLI and IOException.
 
     public String tricorder(String filename) {
         try {
@@ -54,4 +56,9 @@ public class CLIParser {
         ltCmdrData = data.nextLine ();
         return ltCmdrData;
     }
+    /*
+    Method: tricorder - Scans given filename and turns it into a string. If it cannot open the file, it rejects it, and continues.
+
+    Args: filename - given by user.
+     */
 }
