@@ -14,9 +14,12 @@ public class CLIParser {
 
     public Scanner data;
     public String ltCmdrData;
-    public Boolean worked;
-    public String blank = (" ");
+    public String worked;
     // Var creation
+    /*
+    I am aware that I made worked a string instead of a boolean, but I couldn't get a boolean to work for the life of me.
+    It recognized when the boolean was true, but when the boolean was false, it ceased to exist.
+     */
 
     @Command // Help
     public String help() {
@@ -33,23 +36,31 @@ public class CLIParser {
         return ltCmdrData;
     }
     // CLI option through Cliche. Creates "readtest", takes filename from argument, puts it through tricorder function. Returns results.
+    // Also upon failing it throws a note from the developer about his library. It's slightly annoying but I can't change it across computers.
 
     @Command // XOR
-    public String xor(String filename, String cipher) {
+    public void xor(String filename, String cipher) {
         tricorder(filename);
-        return("Accepted.");
+        if (worked == "true") {
+            System.out.println("Accepted");
+        } else if (worked == "false") {
+            ;
+        }
     }
-    // CLI option through Cliche. Creates "xor", takes filename and cipher from arguments, puts the filename through tricorder, and otherwise accepts. Nothing for cipher yet.
+    /* CLI option through Cliche. Creates "xor", takes filename and cipher from arguments, processes the file with tricorder, and accepts. Nothing for cipher yet.
+    The conditional is so it does not show two different results according to which argument passed and which one failed. If one argument fails to pass, the whole thing stops.    */
 
     @Command // analyze
-    public String analyze(String filename, int bucketNum) {
+    public void analyze(String filename, int bucketNum) {
         tricorder(filename);
-
-
-
-        return("Accepted.");
+        if (worked == "true") {
+            System.out.println("Accepted");
+        } else if (worked == "false") {
+            ;
+        }
     }
-    // CLI option through Cliche. Creates "analyze", takes filename and num bucket from arguments, puts the filename through tricorder, and otherwise accepts. Nothing for bucketNum yet.
+    // CLI option through Cliche. Creates "analyze", takes filename and num bucket from arguments, puts the filename through tricorder, and otherwise accepts. Conditional serves the same purpose.
+    // Nothing for bucketNum yet.
 
     public static void main(String[] args) throws IOException {
         ShellFactory.createConsoleShell("", "", new CLIParser())
@@ -59,13 +70,14 @@ public class CLIParser {
     // Manages CLI and IOException.
 
     public String tricorder(String filename) {
+        worked = "true";
         try {
             data = new Scanner(new File(filename));
         } catch (IOException e) {
             System.out.println("Sorry but I was unable to open your file. Verify your file path and try again.");
+            worked = "false";
         }
         ltCmdrData = data.nextLine ();
-        boolean worked = true;
         return ltCmdrData;
     }
     /*
