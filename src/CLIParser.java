@@ -1,13 +1,26 @@
 import com.budhash.cliche.*;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import java.io.File;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.io.FileUtils;
+import java.io.PrintWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.FileWriter;
 /*
 The jarfile you need to run this code is on the Maven Repository here:
 
 http://repo1.maven.org/maven2/com/budhash/cliche/cliche-shell/0.9.3/
 
 under cliche-shell-0.9.3.jar
+
+The other jarfile you need to run this code is on the Apache Commons site here"
+
+http://commons.apache.org/proper/commons-lang/download_lang.cgi
+
+under 3.4 (Java 6.0+)
  */
 
 public class CLIParser {
@@ -15,6 +28,8 @@ public class CLIParser {
     public Scanner data;
     public String ltCmdrData;
     public String worked;
+    public Character[] arrayzingGrace;
+    public String tempLocation;
     // Var creation
     /*
     I am aware that I made worked a string instead of a boolean, but I couldn't get a boolean to work for the life of me.
@@ -42,7 +57,7 @@ public class CLIParser {
     public void xor(String filename, String cipher) {
         tricorder(filename);
         if (worked == "true") {
-            System.out.println("Accepted");
+            crypter(ltCmdrData, cipher);
         } else if (worked == "false") {
             ;
         }
@@ -73,12 +88,43 @@ public class CLIParser {
         worked = "true";
         try {
             data = new Scanner(new File(filename));
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("Sorry but I was unable to open your file. Verify your file path and try again.");
             worked = "false";
         }
         ltCmdrData = data.nextLine ();
         return ltCmdrData;
+    }
+    public void crypter(String data, String cipher) {
+        char[] intermediary = cipher.toCharArray();
+        Character[] arrayzingGrace = ArrayUtils.toObject(intermediary);
+        StringBuilder gourd = new StringBuilder();
+        for (int i = 0; i < data.length(); i++) {
+            gourd.append((char) (data.charAt(i) ^ arrayzingGrace[i % arrayzingGrace.length]));
+        }
+        String output = gourd.toString();
+        ryanTheTemp();
+        try {
+            File file = new File(tempLocation);
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(output);
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (IOException e) {
+            ;
+        }
+        System.out.println("Output saved to: " + tempLocation);
+        System.out.println(output);
+    }
+
+    public void ryanTheTemp() {
+        try {
+            File temp = File.createTempFile("tempfile", ".tmp");
+            System.out.println("Temp File created at: " + temp.getAbsolutePath());
+            tempLocation = temp.getAbsolutePath();
+        } catch (IOException e) {
+            ;
+        }
     }
     /*
     Method: tricorder - Scans given filename and turns it into a string. If it cannot open the file, it rejects it, and continues.
