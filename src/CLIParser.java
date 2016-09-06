@@ -1,4 +1,8 @@
 import com.budhash.cliche.*;
+
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
@@ -40,7 +44,7 @@ public class CLIParser {
     public String help() {
         return "Uses: help -- get help\n" +
                 "      readtest <filepath> -- cat a file to prove that you can read files\n" +
-                "      xor <filepath> <cipher> -- XOR text in file with cipher\n" +
+                "      xor <filepath> <cipher> -- XOR text in file with cipher - writes output to clipboard\n" +
                 "      analyze <filepath> <num buckets> -- give character frequencies for text in file for each bucket\n";
     }
     // This uses the external library Cliche in order to create the "help" for CLI. It prints some help to the screen.
@@ -113,8 +117,11 @@ public class CLIParser {
         } catch (IOException e) {
             ;
         }
-        System.out.println("Output saved to: " + tempLocation);
+        System.out.println("Output saved to clipboard and: " + tempLocation);
         System.out.println(output);
+        StringSelection selection = new StringSelection(output);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(selection, selection);
     }
 
     public void ryanTheTemp() {
