@@ -1,3 +1,2 @@
 This is the most detailed instruction on Cliche. Here I'll describe major aspects of using Cliche library from the developer's viewpoint.
-
 Note: I don't worry much about backward compatibility, but I'll try to emphasize things that will likely be changed.

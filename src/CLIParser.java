@@ -3,16 +3,15 @@ import com.budhash.cliche.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
-import java.io.File;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.io.FileUtils;
-import java.io.PrintWriter;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.io.FileWriter;
 /*
 The jarfile you need to run this code is on the Maven Repository here:
 
@@ -34,6 +33,7 @@ public class CLIParser {
     public String worked;
     public Character[] arrayzingGrace;
     public String tempLocation;
+    public int lines;
     // Var creation
     /*
     I am aware that I made worked a string instead of a boolean, but I couldn't get a boolean to work for the life of me.
@@ -50,9 +50,10 @@ public class CLIParser {
     // This uses the external library Cliche in order to create the "help" for CLI. It prints some help to the screen.
 
     @Command // Readtest
-    public String readtest(String filename) {
+    public void readtest(String filename) {
         tricorder(filename);
-        return ltCmdrData;
+        System.out.println(ltCmdrData);
+        ltCmdrData = "";
     }
     // CLI option through Cliche. Creates "readtest", takes filename from argument, puts it through tricorder function. Returns results.
     // Also upon failing it throws a note from the developer about his library. It's slightly annoying but I can't change it across computers.
@@ -65,6 +66,7 @@ public class CLIParser {
         } else if (worked == "false") {
             ;
         }
+        ltCmdrData = "";
     }
     /* CLI option through Cliche. Creates "xor", takes filename and cipher from arguments, processes the file with tricorder, and accepts. Nothing for cipher yet.
     The conditional is so it does not show two different results according to which argument passed and which one failed. If one argument fails to pass, the whole thing stops.    */
@@ -88,7 +90,7 @@ public class CLIParser {
     }
     // Manages CLI and IOException.
 
-    public String tricorder(String filename) {
+    public void tricorder(String filename) {
         worked = "true";
         try {
             data = new Scanner(new File(filename));
@@ -96,8 +98,23 @@ public class CLIParser {
             System.out.println("Sorry but I was unable to open your file. Verify your file path and try again.");
             worked = "false";
         }
-        ltCmdrData = data.nextLine ();
-        return ltCmdrData;
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(filename));
+            while (reader.readLine() != null) lines++;
+            reader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found.");
+        } catch (IOException e) {
+            System.out.println("Something went wrong. Heck if I know.");
+        }
+        for (int i=0; i < lines; i++) {
+            ltCmdrData += data.nextLine();
+            ltCmdrData += " \n";
+        }
+        ltCmdrData = ltCmdrData.substring(4);
+        lines = 0;
+        data = null;
     }
     public void crypter(String data, String cipher) {
         char[] intermediary = cipher.toCharArray();
@@ -117,11 +134,14 @@ public class CLIParser {
         } catch (IOException e) {
             ;
         }
-        System.out.println("Output saved to clipboard and: " + tempLocation);
+        System.out.println("Output saved to" + tempLocation + ". This filepath has been saved to your clipboard.");
         System.out.println(output);
-        StringSelection selection = new StringSelection(output);
+        StringSelection selection = new StringSelection(tempLocation);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(selection, selection);
+        Path currentRelativePath = Paths.get("");
+        String s = currentRelativePath.toAbsolutePath().toString();
+        System.out.println("Current relative path is: " + s);
     }
 
     public void ryanTheTemp() {
