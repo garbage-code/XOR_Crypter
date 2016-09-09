@@ -5,7 +5,10 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Arrays;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.io.FileUtils;
@@ -31,9 +34,11 @@ public class CLIParser {
     public Scanner data;
     public String ltCmdrData;
     public String worked;
-    public Character[] arrayzingGrace;
+    public char[] arrayzingGrace;
     public String tempLocation;
     public int lines;
+    public Map<Character, Integer> buckets = new HashMap<>();
+    public int size;
     // Var creation
     /*
     I am aware that I made worked a string instead of a boolean, but I couldn't get a boolean to work for the life of me.
@@ -74,8 +79,30 @@ public class CLIParser {
     @Command // analyze
     public void analyze(String filename, int bucketNum) {
         tricorder(filename);
+        char[] dataArray = ltCmdrData.toCharArray();
         if (worked == "true") {
-            System.out.println("Accepted");
+            for (int i = 0; i < dataArray.length; i++) {
+                if (dataArray[i] > size) {
+                    size = dataArray[i];
+                }
+            }
+
+            int[][] message = new int[bucketNum][size + 1];
+            int[] key = new int[bucketNum];
+
+
+            for (int i = 0; i < dataArray.length; i++) {
+                int j = i % bucketNum;
+                message[j][dataArray[i]] += 1;
+                if (message[j][dataArray[i]] > message[j][key[j]]) {
+                    key[j] = dataArray[i];
+                }
+            }
+            int space = 32;
+            for (int i = 0; i < bucketNum; i++) {
+                key[i] = key[i] ^ space;
+            }
+            System.out.println(java.util.Arrays.toString(key));
         } else if (worked == "false") {
             ;
         }
@@ -117,8 +144,7 @@ public class CLIParser {
         data = null;
     }
     public void crypter(String data, String cipher) {
-        char[] intermediary = cipher.toCharArray();
-        Character[] arrayzingGrace = ArrayUtils.toObject(intermediary);
+        char[] arrayzingGrace = cipher.toCharArray();
         StringBuilder gourd = new StringBuilder();
         for (int i = 0; i < data.length(); i++) {
             gourd.append((char) (data.charAt(i) ^ arrayzingGrace[i % arrayzingGrace.length]));
