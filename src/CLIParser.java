@@ -4,11 +4,10 @@ import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Arrays;
+import java.util.*;
+import java.io.ByteArrayOutputStream;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.io.FileUtils;
@@ -57,7 +56,7 @@ public class CLIParser {
     @Command // Readtest
     public void readtest(String filename) {
         tricorder(filename);
-        System.out.println(ltCmdrData);
+        System.out.println(ltCmdrData.substring(4));
         ltCmdrData = "";
     }
     // CLI option through Cliche. Creates "readtest", takes filename from argument, puts it through tricorder function. Returns results.
@@ -139,17 +138,26 @@ public class CLIParser {
             ltCmdrData += data.nextLine();
             ltCmdrData += " \n";
         }
-        ltCmdrData = ltCmdrData.substring(4);
         lines = 0;
         data = null;
     }
     public void crypter(String data, String cipher) {
-        char[] arrayzingGrace = cipher.toCharArray();
-        StringBuilder gourd = new StringBuilder();
-        for (int i = 0; i < data.length(); i++) {
-            gourd.append((char) (data.charAt(i) ^ arrayzingGrace[i % arrayzingGrace.length]));
+        byte[] arrayzingGrace;
+        byte[] programInData;
+        arrayzingGrace = cipher.getBytes(StandardCharsets.UTF_16BE);
+        programInData = data.getBytes(StandardCharsets.UTF_16BE);
+        ByteArrayInputStream dangitBobby = new ByteArrayInputStream(arrayzingGrace);
+        ByteArrayInputStream propaneAccessories = new ByteArrayInputStream(programInData);
+        ByteArrayOutputStream september = new ByteArrayOutputStream();
+        final int dangitBobbyChars = dangitBobby.available();
+        byte[] intermediary = new byte[100];
+        // for loops are overrated - used a while loop here because for loops with ByteArrayStreams is disgusting
+        int i = 0;
+        while(propaneAccessories.available() > 0) {
+            september.write(propaneAccessories.read() ^ dangitBobby.read(intermediary, i % dangitBobbyChars, i % dangitBobbyChars));
+            i++;
         }
-        String output = gourd.toString();
+        String output = new String(september.toByteArray(), StandardCharsets.UTF_16BE);
         ryanTheTemp();
         try {
             File file = new File(tempLocation);
@@ -161,13 +169,13 @@ public class CLIParser {
             ;
         }
         System.out.println("Output saved to" + tempLocation + ". This filepath has been saved to your clipboard.");
-        System.out.println(output);
+        System.out.println(output.substring(4, output.length()-2));
         StringSelection selection = new StringSelection(tempLocation);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(selection, selection);
         Path currentRelativePath = Paths.get("");
         String s = currentRelativePath.toAbsolutePath().toString();
-        System.out.println("Current relative path is: " + s);
+        // TODO: Implement a better way to input filenames - use currentRelativePath
     }
 
     public void ryanTheTemp() {
