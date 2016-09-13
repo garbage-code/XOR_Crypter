@@ -151,7 +151,7 @@ public class CLIParser {
         ByteArrayOutputStream september = new ByteArrayOutputStream();
         final int dangitBobbyChars = dangitBobby.available();
         byte[] intermediary = new byte[100];
-        // for loops are overrated - used a while loop here because for loops with ByteArrayStreams is disgusting
+        // for loops are overrated - used a while loop here because for loops with ByteArrayStreams is disgusting. shoutout to wheel reinvention
         int i = 0;
         while(propaneAccessories.available() > 0) {
             september.write(propaneAccessories.read() ^ dangitBobby.read(intermediary, i % dangitBobbyChars, i % dangitBobbyChars));
