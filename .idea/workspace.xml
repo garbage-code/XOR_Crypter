@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="87d5e3f8-bc89-4a40-8b10-b55c6aa2c228" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/lib/commons-io-2.5.jar" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/lib/commons-lang3-3.4.jar" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.classpath" afterPath="$PROJECT_DIR$/.classpath" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/XOR_Crypter.eml" afterPath="$PROJECT_DIR$/XOR_Crypter.eml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/CLIParser.java" afterPath="$PROJECT_DIR$/src/CLIParser.java" />
     </list>
     <ignored path="XOR_Crypter.iws" />
@@ -31,8 +27,8 @@
       <file leaf-file-name="CLIParser.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/CLIParser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="560">
-              <caret line="19" column="3" selection-start-line="19" selection-start-column="3" selection-end-line="19" selection-end-column="3" />
+            <state relative-caret-position="1295">
+              <caret line="40" column="112" selection-start-line="40" selection-start-column="112" selection-end-line="40" selection-end-column="112" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -887,8 +883,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/CLIParser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="560">
-          <caret line="19" column="3" selection-start-line="19" selection-start-column="3" selection-end-line="19" selection-end-column="3" />
+        <state relative-caret-position="1295">
+          <caret line="40" column="112" selection-start-line="40" selection-start-column="112" selection-end-line="40" selection-end-column="112" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

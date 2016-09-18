@@ -38,7 +38,8 @@ public class CLIParser {
                 "      readtest <filepath> -- cat a file to prove that you can read files\n" +
                 "      xor <filepath> <cipher> -- XOR text in file with cipher - writes filepath of output to clipboard\n" +
                 "      analyze <filepath> <num buckets> -- give character frequencies for text in file for each bucket\n" +
-                "      Please take note that this program supports Unicode, and does everything in UTF_16BE.";
+                "      Please take note that this program supports Unicode, and does everything in UTF_16BE." + 
+                "      Please use full filepaths. This program does not support relative paths.";
     }
     // This uses the external library Cliche in order to create the "help" for CLI. It prints some help to the screen.
 
