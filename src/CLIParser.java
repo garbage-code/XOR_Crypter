@@ -4,28 +4,17 @@ import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.*;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.io.ByteArrayOutputStream;
+import java.util.List;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.io.FileUtils;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
 /*
 The jarfile you need to run this code is on the Maven Repository here:
 
 http://repo1.maven.org/maven2/com/budhash/cliche/cliche-shell/0.9.3/
 
 under cliche-shell-0.9.3.jar
-
-The other jarfile you need to run this code is on the Apache Commons site here"
-
-http://commons.apache.org/proper/commons-lang/download_lang.cgi
-
-under 3.4 (Java 6.0+)
  */
 
 public class CLIParser {
@@ -33,11 +22,8 @@ public class CLIParser {
     public Scanner data;
     public String ltCmdrData;
     public String worked;
-    public char[] arrayzingGrace;
     public String tempLocation;
     public int lines;
-    public Map<Character, Integer> buckets = new HashMap<>();
-    public int size;
     // Var creation
     /*
     I am aware that I made worked a string instead of a boolean, but I couldn't get a boolean to work for the life of me.
@@ -48,8 +34,9 @@ public class CLIParser {
     public String help() {
         return "Uses: help -- get help\n" +
                 "      readtest <filepath> -- cat a file to prove that you can read files\n" +
-                "      xor <filepath> <cipher> -- XOR text in file with cipher - writes output to clipboard\n" +
-                "      analyze <filepath> <num buckets> -- give character frequencies for text in file for each bucket\n";
+                "      xor <filepath> <cipher> -- XOR text in file with cipher - writes filepath of output to clipboard\n" +
+                "      analyze <filepath> <num buckets> -- give character frequencies for text in file for each bucket\n" +
+                "      Please take note that this program supports Unicode, and does everything in UTF_16BE.";
     }
     // This uses the external library Cliche in order to create the "help" for CLI. It prints some help to the screen.
 
@@ -60,7 +47,7 @@ public class CLIParser {
         ltCmdrData = "";
     }
     // CLI option through Cliche. Creates "readtest", takes filename from argument, puts it through tricorder function. Returns results.
-    // Also upon failing it throws a note from the developer about his library. It's slightly annoying but I can't change it across computers.
+    // Also upon failing it throws a note from the developer about his library. It's slightly annoying but I can't change it reliably.
 
     @Command // XOR
     public void xor(String filename, String cipher) {
@@ -72,42 +59,49 @@ public class CLIParser {
         }
         ltCmdrData = "";
     }
-    /* CLI option through Cliche. Creates "xor", takes filename and cipher from arguments, processes the file with tricorder, and accepts. Nothing for cipher yet.
+    /* CLI option through Cliche. Creates "xor", takes filename and cipher from arguments, processes the file with tricorder, and accepts. Pushes the file through the crypter function in order to XOR.
     The conditional is so it does not show two different results according to which argument passed and which one failed. If one argument fails to pass, the whole thing stops.    */
 
     @Command // analyze
-    public void analyze(String filename, int bucketNum) {
+    public void analyze(String filename, int bucketNum) throws IOException {
         tricorder(filename);
-        char[] dataArray = ltCmdrData.toCharArray();
-        if (worked == "true") {
-            for (int i = 0; i < dataArray.length; i++) {
-                if (dataArray[i] > size) {
-                    size = dataArray[i];
-                }
-            }
-
-            int[][] message = new int[bucketNum][size + 1];
-            int[] key = new int[bucketNum];
-
-
-            for (int i = 0; i < dataArray.length; i++) {
-                int j = i % bucketNum;
-                message[j][dataArray[i]] += 1;
-                if (message[j][dataArray[i]] > message[j][key[j]]) {
-                    key[j] = dataArray[i];
-                }
-            }
-            int space = 32;
-            for (int i = 0; i < bucketNum; i++) {
-                key[i] = key[i] ^ space;
-            }
-            System.out.println(java.util.Arrays.toString(key));
-        } else if (worked == "false") {
-            ;
+        List<Integer> vals = new ArrayList<Integer>();
+        for (int i = 0; i < ltCmdrData.length(); i++) {
+            char c = ltCmdrData.charAt(i);
+            vals.add((int) c);
         }
+        int[] key = new int[bucketNum];
+        int max = 0;
+        for (int i = 0; i < vals.size(); i++) {
+            if (vals.get(i) > max) {
+                max = vals.get(i);
+            }
+        }
+        int[][] possibleMessage = new int[bucketNum][max+1];
+        for (int i = 0; i < vals.size(); i++) {
+            int j = i % bucketNum;
+            possibleMessage[j][vals.get(i)]++;
+            if (possibleMessage[j][vals.get(i)] > possibleMessage[j][key[j]]) {
+                key[j] = vals.get(i);
+            }
+        }
+        for (int i = 0; i < bucketNum; i++) {
+            key[i] = key[i] ^ 32;
+        }
+        List<Character> keyChars = new ArrayList<>();
+        for (int i = 0; i < key.length; i++) {
+            keyChars.add((char) key[i]);
+        }
+        StringBuilder sb = new StringBuilder(keyChars.size());
+        for (char c : keyChars)
+            sb.append(c);
+        String result = sb.toString();
+        System.out.println("The key, no matter how wacky, is: " + result);
     }
-    // CLI option through Cliche. Creates "analyze", takes filename and num bucket from arguments, puts the filename through tricorder, and otherwise accepts. Conditional serves the same purpose.
-    // Nothing for bucketNum yet.
+    /*
+    CLI option through Cliche. Takes filename, and expected key length (bucketNum). Turns string into characters, than integers. Function first finds the highest value of the string integers.
+    Creates a 2 dimensional array to do frequency analysis. Does frequency analysis, as well as establish the possible values. XOR's key values by 32 (space). Turns it back into readable output. Outputs.
+     */
 
     public static void main(String[] args) throws IOException {
         ShellFactory.createConsoleShell("", "", new CLIParser())
@@ -141,6 +135,9 @@ public class CLIParser {
         lines = 0;
         data = null;
     }
+    // Reads files that are thrown in. Handles exceptions.
+
+
     public void crypter(String data, String cipher) {
         byte[] arrayzingGrace;
         byte[] programInData;
@@ -151,13 +148,14 @@ public class CLIParser {
         ByteArrayOutputStream september = new ByteArrayOutputStream();
         final int dangitBobbyChars = dangitBobby.available();
         byte[] intermediary = new byte[100];
-        // for loops are overrated - used a while loop here because for loops with ByteArrayStreams is disgusting. shoutout to wheel reinvention
-        int i = 0;
-        while(propaneAccessories.available() > 0) {
+        for (int i = 0; propaneAccessories.available() > 0; i++) {
             september.write(propaneAccessories.read() ^ dangitBobby.read(intermediary, i % dangitBobbyChars, i % dangitBobbyChars));
-            i++;
         }
-        String output = new String(september.toByteArray(), StandardCharsets.UTF_16BE);
+        String output = "";
+        String checkFor = "null";
+        output = new String(september.toByteArray(), StandardCharsets.UTF_16BE);
+        output = output.replace(checkFor,"");
+        output = output.substring(0, output.length()-2);
         ryanTheTemp();
         try {
             File file = new File(tempLocation);
@@ -168,15 +166,13 @@ public class CLIParser {
         } catch (IOException e) {
             ;
         }
-        System.out.println("Output saved to" + tempLocation + ". This filepath has been saved to your clipboard.");
-        System.out.println(output.substring(4, output.length()-2));
+        System.out.println("Output saved to " + tempLocation + " - This filepath has been saved to your clipboard.");
+        System.out.println(output);
         StringSelection selection = new StringSelection(tempLocation);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(selection, selection);
-        Path currentRelativePath = Paths.get("");
-        String s = currentRelativePath.toAbsolutePath().toString();
-        // TODO: Implement a better way to input filenames - use currentRelativePath
     }
+    // Encrypts/decrypts files. Takes string, turns string into byte array, then into byte array streams. XORs the bytes. Prints the output, and also saves it to .tmp file. Copies tmp filepath to clipboard (on Windows, at least.)
 
     public void ryanTheTemp() {
         try {
@@ -187,9 +183,5 @@ public class CLIParser {
             ;
         }
     }
-    /*
-    Method: tricorder - Scans given filename and turns it into a string. If it cannot open the file, it rejects it, and continues.
-
-    Args: filename - given by user.
-     */
+    // This function creates the temp file. It's a separate function because I originally anticipated the analyze function would also create temp files. Didn't reintegrate it.
 }
