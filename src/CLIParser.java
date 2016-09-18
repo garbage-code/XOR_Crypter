@@ -14,7 +14,9 @@ The jarfile you need to run this code is on the Maven Repository here:
 
 http://repo1.maven.org/maven2/com/budhash/cliche/cliche-shell/0.9.3/
 
-under cliche-shell-0.9.3.jar
+under cliche-shell-0.9.3.
+
+GitHub repo - https://github.com/garbage-code/XOR_Crypter
  */
 
 public class CLIParser {

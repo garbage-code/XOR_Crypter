@@ -3,12 +3,6 @@
 	<output-test url="file://$MODULE_DIR$/out/test/XOR_Crypter"/>
 	<exclude-output/>
 	<contentEntry url="file://$MODULE_DIR$"/>
-	<lib name="commons-lang3-3.4.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/lib/commons-lang3-3.4.jar!/"/>
-	</lib>
-	<lib name="commons-io-2.5.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/lib/commons-io-2.5.jar!/"/>
-	</lib>
 	<levels>
 		<level name="com.budhash.cliche:cliche-shell:0.9.3" value="project"/>
 	</levels>
