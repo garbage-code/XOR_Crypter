@@ -156,7 +156,7 @@ public class CLIParser {
         ByteArrayInputStream dataByteStream = new ByteArrayInputStream(dataByteArray);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         final int cipherStreamChars = cipherByteStream.available();
-        byte[] intermediary = new byte[100]
+        byte[] intermediary = new byte[100];
         for (int i = 0; dataByteStream.available() > 0; i++) {
             outputStream.write(dataByteStream.read() ^ cipherByteStream.read(intermediary, i % cipherStreamChars, i % cipherStreamChars));
         }
