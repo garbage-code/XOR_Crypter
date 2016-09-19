@@ -38,7 +38,7 @@ public class CLIParser {
                 "      readtest <filepath> -- cat a file to prove that you can read files\n" +
                 "      xor <filepath> <cipher> -- XOR text in file with cipher - writes filepath of output to clipboard\n" +
                 "      analyze <filepath> <num buckets> -- give character frequencies for text in file for each bucket\n" +
-                "      Please take note that this program supports Unicode, and does everything in UTF_16BE." + 
+                "      Please take note that this program supports Unicode, and does everything in UTF_16BE." +
                 "      Please use full filepaths. This program does not support relative paths.";
     }
     // This uses the external library Cliche in order to create the "help" for CLI. It prints some help to the screen.
@@ -73,6 +73,7 @@ public class CLIParser {
             char c = ltCmdrData.charAt(i);
             vals.add((int) c);
         }
+        // Switches string to unicode integer values
         int[] key = new int[bucketNum];
         int max = 0;
         for (int i = 0; i < vals.size(); i++) {
@@ -80,17 +81,20 @@ public class CLIParser {
                 max = vals.get(i);
             }
         }
+        // Finds the maximum integer value of the characters
         int[][] possibleMessage = new int[bucketNum][max+1];
         for (int i = 0; i < vals.size(); i++) {
-            int j = i % bucketNum;
-            possibleMessage[j][vals.get(i)]++;
-            if (possibleMessage[j][vals.get(i)] > possibleMessage[j][key[j]]) {
-                key[j] = vals.get(i);
+            int bucketNumMod = i % bucketNum;
+            possibleMessage[bucketNumMod][vals.get(i)]++;
+            if (possibleMessage[bucketNumMod][vals.get(i)] > possibleMessage[bucketNumMod][key[bucketNumMod]]) {
+                key[bucketNumMod] = vals.get(i);
             }
         }
+        // Frequency analysis, checks for most common chars
         for (int i = 0; i < bucketNum; i++) {
             key[i] = key[i] ^ 32;
         }
+        // XORs everything by 32 (the space character)
         List<Character> keyChars = new ArrayList<>();
         for (int i = 0; i < key.length; i++) {
             keyChars.add((char) key[i]);
@@ -98,8 +102,10 @@ public class CLIParser {
         StringBuilder sb = new StringBuilder(keyChars.size());
         for (char c : keyChars)
             sb.append(c);
+        // All this turns integers back into a string
         String result = sb.toString();
         System.out.println("The key, no matter how wacky, is: " + result);
+        System.out.println("I am completely aware that this is not the key that you used at first. But just believe.");
     }
     /*
     CLI option through Cliche. Takes filename, and expected key length (bucketNum). Turns string into characters, than integers. Function first finds the highest value of the string integers.
@@ -129,7 +135,7 @@ public class CLIParser {
         } catch (FileNotFoundException e) {
             System.out.println("File not found.");
         } catch (IOException e) {
-            System.out.println("Something went wrong. Heck if I know.");
+            System.out.println("Something went wrong.");
         }
         for (int i=0; i < lines; i++) {
             ltCmdrData += data.nextLine();
@@ -142,21 +148,22 @@ public class CLIParser {
 
 
     public void crypter(String data, String cipher) {
-        byte[] arrayzingGrace;
-        byte[] programInData;
-        arrayzingGrace = cipher.getBytes(StandardCharsets.UTF_16BE);
-        programInData = data.getBytes(StandardCharsets.UTF_16BE);
-        ByteArrayInputStream dangitBobby = new ByteArrayInputStream(arrayzingGrace);
-        ByteArrayInputStream propaneAccessories = new ByteArrayInputStream(programInData);
-        ByteArrayOutputStream september = new ByteArrayOutputStream();
-        final int dangitBobbyChars = dangitBobby.available();
-        byte[] intermediary = new byte[100];
-        for (int i = 0; propaneAccessories.available() > 0; i++) {
-            september.write(propaneAccessories.read() ^ dangitBobby.read(intermediary, i % dangitBobbyChars, i % dangitBobbyChars));
+        byte[] cipherByteArray;
+        byte[] dataByteArray;
+        cipherByteArray = cipher.getBytes(StandardCharsets.UTF_16BE);
+        dataByteArray = data.getBytes(StandardCharsets.UTF_16BE);
+        ByteArrayInputStream cipherByteStream = new ByteArrayInputStream(cipherByteArray);
+        ByteArrayInputStream dataByteStream = new ByteArrayInputStream(dataByteArray);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final int cipherStreamChars = cipherByteStream.available();
+        byte[] intermediary = new byte[100]
+        for (int i = 0; dataByteStream.available() > 0; i++) {
+            outputStream.write(dataByteStream.read() ^ cipherByteStream.read(intermediary, i % cipherStreamChars, i % cipherStreamChars));
         }
+        // XORs everything
         String output = "";
         String checkFor = "null";
-        output = new String(september.toByteArray(), StandardCharsets.UTF_16BE);
+        output = new String(outputStream.toByteArray(), StandardCharsets.UTF_16BE);
         output = output.replace(checkFor,"");
         output = output.substring(0, output.length()-2);
         ryanTheTemp();
